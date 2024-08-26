@@ -1,8 +1,9 @@
-import { handleRouteOnlyNavigation as e } from "./handleRouteOnlyNavigation.js";
+import { handleRouteOnlyNavigation as o } from "./handleRouteOnlyNavigation.js";
 import { OptimisticRouterProvider as i } from "./OptimisticRouterProvider.js";
-import { usePageDataOptions as p } from "./usePageDataOptions.js";
+import { getQueryFn as n, getQueryKey as p } from "./getPageDataOptions.js";
 export {
   i as OptimisticRouterProvider,
-  e as handleRouteOnlyNavigation,
-  p as usePageDataOptions
+  n as getQueryFn,
+  p as getQueryKey,
+  o as handleRouteOnlyNavigation
 };
