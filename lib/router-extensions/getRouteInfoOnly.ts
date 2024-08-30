@@ -30,7 +30,7 @@ export const getRouteInfoOnly = async ({ singletonRouter, ...props}: GetRouteInf
   }).then((res) => {
     if ('__N_SSG' in res || '__N_SSP' in res) {
       res.__N_SSG = false;
-      res.__N_SSG = false;
+      res.__N_SSP = false;
     }
     setTimeout(() => {
       if ('route' in res && res.route) {
