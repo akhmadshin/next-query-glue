@@ -15,6 +15,9 @@ $ yarn add next-query-glue
 ## Getting started
 [with react-query](docs%2Fwith-react-query%2FREADME.md)
 
+## Starters
+[react-query + View Transitions API](https://github.com/akhmadshin/next-query-glue-starter)
+
 ## That library exports:
 - NextQueryGlueProvider that should wrap your application. It will slightly modify router single tone.
 - prepareDirectNavigation, function that makes pages router skip next data/middleware call and display page immediately. Should be called before navigation.
