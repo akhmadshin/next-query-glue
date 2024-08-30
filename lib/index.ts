@@ -1,3 +1,3 @@
-export { handleRouteOnlyNavigation } from './handleRouteOnlyNavigation';
-export { OptimisticRouterProvider } from './OptimisticRouterProvider';
+export { NextQueryGlueProvider } from './NextQueryGlueProvider';
+export { prepareDirectNavigation } from './prepareDirectNavigation';
 export { getQueryKey, getQueryFn } from './getPageDataOptions';

@@ -1,9 +1,9 @@
-import { handleRouteOnlyNavigation as o } from "./handleRouteOnlyNavigation.js";
-import { OptimisticRouterProvider as i } from "./OptimisticRouterProvider.js";
-import { getQueryFn as n, getQueryKey as p } from "./getPageDataOptions.js";
+import { NextQueryGlueProvider as o } from "./NextQueryGlueProvider.js";
+import { prepareDirectNavigation as p } from "./prepareDirectNavigation.js";
+import { getQueryFn as u, getQueryKey as x } from "./getPageDataOptions.js";
 export {
-  i as OptimisticRouterProvider,
-  n as getQueryFn,
-  p as getQueryKey,
-  o as handleRouteOnlyNavigation
+  o as NextQueryGlueProvider,
+  u as getQueryFn,
+  x as getQueryKey,
+  p as prepareDirectNavigation
 };

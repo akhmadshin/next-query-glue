@@ -10,7 +10,7 @@ interface Props {
   singletonRouter: SingletonRouter,
   withTrailingSlash: boolean,
 }
-export const handleRouteOnlyNavigation = ({
+export const prepareDirectNavigation = ({
   href,
   singletonRouter,
   withTrailingSlash,

@@ -16,7 +16,7 @@ interface Props {
   singletonRouter?: SingletonRouter;
 }
 
-export const OptimisticRouterContext = createContext<Props>({ pathModifier: undefined, singletonRouter: undefined });
+export const NextQueryGlueContext = createContext<Props>({ pathModifier: undefined, singletonRouter: undefined });
 
 export const patchRouter = (pathnameModifier: (pathname: string) => string = (route) => route, singletonRouter?: SingletonRouter) => {
   if (typeof window === 'undefined') {
@@ -59,13 +59,13 @@ export const patchRouter = (pathnameModifier: (pathname: string) => string = (ro
   }
 }
 
-export const OptimisticRouterProvider: FC<PropsWithChildren<Props>> = ({ pathModifier, singletonRouter, children }) => {
+export const NextQueryGlueProvider: FC<PropsWithChildren<Props>> = ({ pathModifier, singletonRouter, children }) => {
   patchRouter(pathModifier, singletonRouter);
 
   return (
-    <OptimisticRouterContext.Provider value={{ pathModifier, singletonRouter }}>
+    <NextQueryGlueContext.Provider value={{ pathModifier, singletonRouter }}>
       {children}
-    </OptimisticRouterContext.Provider>
+    </NextQueryGlueContext.Provider>
   )
 }
 

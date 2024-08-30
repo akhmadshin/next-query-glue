@@ -17,7 +17,9 @@ export const getRouteInfoOnly = async ({ singletonRouter, ...props}: GetRouteInf
 
   pageRouter.getRouteInfo = pageRouter.getRouteInfoOrig;
   const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isQueryUpdating,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isMiddlewareRewrite,
     ...restProps
   } = props;
@@ -25,9 +27,16 @@ export const getRouteInfoOnly = async ({ singletonRouter, ...props}: GetRouteInf
     isQueryUpdating: true,
     isMiddlewareRewrite: false,
     ...restProps,
-  }).then((res: any) => {
-    res.__N_SSG = false;
-    res.__N_SSP = false;
+  }).then((res) => {
+    if ('__N_SSG' in res || '__N_SSP' in res) {
+      res.__N_SSG = false;
+      res.__N_SSG = false;
+    }
+    setTimeout(() => {
+      if ('route' in res && res.route) {
+        delete pageRouter.components[res.route];
+      }
+    }, 0);
     return res;
   });
 }

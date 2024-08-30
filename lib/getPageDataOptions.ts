@@ -1,4 +1,3 @@
-import { resolveDynamicRoute } from './router-utils/resolve-dynamic-route';
 import { buildRoute } from './router-utils/build-route';
 import type { NextRouter, SingletonRouter } from 'next/router';
 import {
@@ -14,17 +13,16 @@ export const getQueryFn = async (
   singletonRouter?: SingletonRouter,
   pathModifier?: (path: string) => string,
 ): Promise<object> => {
-  console.log('getQueryFn run = ');
-
   const pageRouter = singletonRouter?.router as ModifiedRouter;
   if (!pageRouter) {
     throw new Error('router singleton is undefined');
   }
 
-    let pageProps: object | { notFound: true } | undefined = undefined;
+  let pageProps: object | { notFound: true } | undefined = undefined;
 
-    pageRouter.onlyAHashChange = pageRouter.onlyAHashChangeNever;
-    pageRouter.getRouteInfo = async (props: GetRouteInfoProps) => pageRouter.getRouteInfoWithOnLoad({
+  pageRouter.onlyAHashChange = pageRouter.onlyAHashChangeNever;
+  pageRouter.getRouteInfo = async (props: GetRouteInfoProps) => {
+    return pageRouter.getRouteInfoWithOnLoad({
       singletonRouter,
       ...props,
       onLoad: (res: GetRouteInfoResponse) => {
@@ -45,28 +43,11 @@ export const getQueryFn = async (
         return Promise.resolve();
       },
     });
-
-    const modifiedAsPath = pageRouter.asPath.split('#')[0].split('?')[0];
-    const componentPath = await resolveDynamicRoute(pathModifier ? pathModifier(modifiedAsPath) : modifiedAsPath, singletonRouter);
-    const asPath = pageRouter.asPath;
-    const resolvedUrl = getResolvedUrl(router, withTrailingSlash, pathModifier);
-
-  const routeData = pageRouter.components[componentPath];
-
-  console.log('getQueryFn routeData old = ', pageRouter.components[componentPath]);
-  if (routeData.__N_SSG === false && routeData.__N_SSP === false) {
-    delete pageRouter.components[componentPath];
   }
+  const asPath = pageRouter.asPath;
+  const resolvedUrl = getResolvedUrl(router, withTrailingSlash, pathModifier);
 
-  await router.push(resolvedUrl, asPath, { scroll: false }).catch((err) => {
-    console.log('getQueryFn push error ', err);
-  });
-
-  if (routeData.__N_SSG === false && routeData.__N_SSP === false) {
-    delete pageRouter.components[componentPath];
-  }
-
-  console.log('getQueryFn routeData new = ', pageRouter.components[componentPath]);
+  await router.push(resolvedUrl, asPath, { scroll: false });
 
   pageRouter.getRouteInfo = pageRouter.getRouteInfoOrig;
   pageRouter.onlyAHashChange = pageRouter.onlyAHashChangeOrig;
