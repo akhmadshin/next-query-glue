@@ -12,6 +12,8 @@ $ npm install next-query-glue
 $ yarn add next-query-glue
 ```
 
+## Getting started
+[with react-query](docs%2Fwith-react-query%2FREADME.md)
 
 ## That library exports:
 - NextQueryGlueProvider that should wrap your application. It will slightly modify router single tone.
