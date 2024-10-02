@@ -46,9 +46,6 @@ export const patchRouter = (pathnameModifier: (pathname: string) => string = (ro
   if (!pageRouter.subOrig && pageRouter.sub) {
     pageRouter.subOrig = pageRouter.sub.bind(pageRouter) as Subscription;
   }
-  if (!pageRouter.subModified) {
-    pageRouter.subModified = ((info: PrivateRouteInfo, App: AppComponent, scroll: { x: number; y: number } | null) => subModified(info, App, scroll, singletonRouter)).bind(pageRouter) as Subscription;
-  }
   pageRouter.sub = ((info: PrivateRouteInfo, App: AppComponent, scroll: { x: number; y: number } | null) => subModified(info, App, scroll, singletonRouter)).bind(pageRouter) as Subscription;
 
   if (!pageRouter.onlyAHashChangeOrig) {

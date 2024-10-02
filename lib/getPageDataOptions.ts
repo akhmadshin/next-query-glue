@@ -10,7 +10,7 @@ import {
 export const getQueryFn = async (
   router: NextRouter,
   withTrailingSlash: boolean,
-  singletonRouter?: SingletonRouter,
+  singletonRouter: SingletonRouter,
   pathModifier?: (path: string) => string,
 ): Promise<object> => {
   const pageRouter = singletonRouter?.router as ModifiedRouter;
@@ -47,7 +47,9 @@ export const getQueryFn = async (
   const asPath = pageRouter.asPath;
   const resolvedUrl = getResolvedUrl(router, withTrailingSlash, pathModifier);
 
-  await router.push(resolvedUrl, asPath, { scroll: false });
+  await router.push(resolvedUrl, asPath, { scroll: false }).catch((err) => {
+    throw new Error(err);
+  });
 
   pageRouter.getRouteInfo = pageRouter.getRouteInfoOrig;
   pageRouter.onlyAHashChange = pageRouter.onlyAHashChangeOrig;

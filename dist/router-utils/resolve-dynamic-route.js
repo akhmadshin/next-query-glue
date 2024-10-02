@@ -1,4 +1,4 @@
-import { i as _, g as S } from "../route-regex-BdL0Ge3o.js";
+import { i as _, g as S } from "../route-regex-CxvJkuEQ.js";
 import { removeTrailingSlash as p } from "./remove-trailing-slash.js";
 var g = {}, f = {}, w = {};
 (function(r) {
@@ -105,11 +105,10 @@ var y = {};
     value: !0
   });
   function s(e, t) {
-    for (var o in t)
-      Object.defineProperty(e, o, {
-        enumerable: !0,
-        get: t[o]
-      });
+    for (var o in t) Object.defineProperty(e, o, {
+      enumerable: !0,
+      get: t[o]
+    });
   }
   s(r, {
     getSortedRoutes: function() {

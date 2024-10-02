@@ -9,12 +9,13 @@ import singletonRouter from 'next/dist/client/router';
 import { prepareDirectNavigation, NextQueryGlueProvider } from 'next-query-glue';
 import { DehydratedState, HydrationBoundary, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 import { createRouteLoader } from 'next/dist/client/route-loader';
+import { flushSync } from 'react-dom';
 
-// Prefetch js chunks of the routes
+// Optional. Prefetch js chunks of the routes on initial load.
 (() => {
   if (typeof window === 'undefined') {
     return;
@@ -24,9 +25,84 @@ import { createRouteLoader } from 'next/dist/client/route-loader';
   routeLoader.prefetch('/blog/[slug]').catch((e: string) => { throw new Error(e) });
 })()
 
+// Optional. Handle view transitions
+const handleRouteChangeStart = (href: string) => {
+  flushSync(() => {
+    const el = document.querySelector<HTMLImageElement>(`[style*='view-transition-name']`);
+    if (el) {
+      el.style.viewTransitionName = '';
+    }
+    const image = document.querySelector<HTMLImageElement>('.transition-img');
+    if (image && image.src) {
+      image.style.viewTransitionName = 'transition-img';
+      window.transitionImg = image.src.replace(location.origin || '', '');
+      return;
+    }
+
+    const clickedLink = document.querySelector<HTMLImageElement>(`a[href$='${href}']`);
+    const clickedImg = clickedLink?.querySelector<HTMLImageElement>('.transitionable-img');
+    if (clickedImg) {
+      window.transitionImg = clickedImg.src.replace(location.origin || '', '');
+      clickedImg.style.viewTransitionName = 'transition-img';
+    }
+  })
+}
+const handleRouteChangeComplete = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  flushSync(() => {
+    if (window.transitionImg) {
+      const transitionImg = document.querySelector<HTMLImageElement>(`img[src$='${window.transitionImg}']`);
+      if (transitionImg) {
+        transitionImg.style.viewTransitionName = 'transition-img';
+      }
+    }
+  })
+
+  // Next tick
+  setTimeout(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+
+    if (window.pageMounted) {
+      window.pageMounted();
+      window.pageMounted = undefined;
+    }
+    window.transitionImg = undefined;
+  }, 0);
+}
 
 export default function App({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedState}>) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (!router) {
+      return;
+    }
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+
+    router.prefetch = async () => Promise.resolve(undefined);
+
+    router.beforePopState((state) => {
+      prepareDirectNavigation({
+        href: state.as,
+        singletonRouter,
+        withTrailingSlash: Boolean(process.env.__NEXT_TRAILING_SLASH),
+      });
+      return true;
+    });
+
+    // Optional. Handle view transitions
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    }
+  }, [router]);
 
   const [queryClient] = React.useState(() => new QueryClient({
     defaultOptions: {
@@ -36,21 +112,6 @@ export default function App({ Component, pageProps }: AppProps<{ dehydratedState
       }
     }
   }))
-
-  useIsomorphicLayoutEffect(() => {
-    // disable router prefetch completely
-    router.prefetch = async () => Promise.resolve(undefined);
-
-    // makes navigation through history faster
-    router.beforePopState((state) => {
-      prepareDirectNavigation({
-        href: state.as,
-        singletonRouter,
-        withTrailingSlash: Boolean(process.env.__NEXT_TRAILING_SLASH),
-      });
-      return true;
-    });
-  }, [router])
 
   return (
     <NextQueryGlueProvider singletonRouter={singletonRouter}>
@@ -138,21 +199,11 @@ export const withSSRTanStackQuery = <T extends object, Q extends ParsedUrlQuery 
 }
 ```
 
-Wrap getServersideProps functions like this
+Wrap your getServersideProps functions
 ```ts
-export const getServerSideProps = withSSRTanStackQuery<ArticleItemApi, { slug: string }>(async ({ params }) => {
-  const { slug } = params ?? {};
-  try {
-    const article = await fetchArticle(slug);
-    return {
-      props: article,
-    }
-  } catch (e) {
-    return {
-      notFound: true,
-    }
-  }
-})
+export const getServerSideProps = withSSRTanStackQuery<T, Q>(
+  // your getServerSideProps function here
+)
 ```
 </details>
 
@@ -281,38 +332,54 @@ const { data: article, isLoading, isFetching, isStale} = usePageData<BlogItemPag
 
 ```tsx
 import NextLink, { LinkProps } from 'next/link';
-import React, { AnchorHTMLAttributes, MouseEvent, PropsWithChildren } from 'react';
+import React, { AnchorHTMLAttributes, MouseEvent, PropsWithChildren, useRef } from 'react';
 import { prepareDirectNavigation } from 'next-query-glue';
 import singletonRouter from 'next/router';
+import { transitionHelper } from '@/lib/transitionHelper';
 
 type NextLinkProps = PropsWithChildren<Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
   LinkProps>
 
 type Props = NextLinkProps & {
   placeholderData?: object;
-  isDirect?: boolean;
 }
+
+const startPageTransition = () => {
+  const pageMountedPromise: Promise<void> = new Promise(resolve => {
+    window.pageMounted = resolve;
+  })
+
+  transitionHelper({
+    update: async () => {
+      await pageMountedPromise;
+    },
+  });
+}
+
 export const Link = React.forwardRef<HTMLAnchorElement, Props>(function LinkComponent(props, ref) {
   const {
     placeholderData,
     onClick,
-    isDirect = true,
     href,
     children,
     ...restProps
   } = props;
+  const localRef = useRef<HTMLImageElement>();
+
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     if (onClick) {
       onClick(e);
     }
-    if (isDirect) {
-      prepareDirectNavigation({
-        href,
-        singletonRouter,
-        withTrailingSlash: Boolean(process.env.__NEXT_TRAILING_SLASH),
-      });
-      window.placeholderData = placeholderData;
-    }
+
+    prepareDirectNavigation({
+      href,
+      singletonRouter,
+      withTrailingSlash: Boolean(process.env.__NEXT_TRAILING_SLASH),
+    });
+    window.placeholderData = placeholderData;
+
+    // Optional. Start view transition
+    startPageTransition();
   }
 
   return (
@@ -320,7 +387,15 @@ export const Link = React.forwardRef<HTMLAnchorElement, Props>(function LinkComp
       onClick={handleClick}
       href={href}
       prefetch={false}
-      ref={ref}
+      ref={(node) => {
+        // @ts-ignore
+        localRef.current = node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      }}
       {...restProps}
     >{children}</NextLink>
   )
