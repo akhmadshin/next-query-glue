@@ -19,7 +19,7 @@ $ yarn add next-query-glue
 [react-query + View Transitions API](https://github.com/akhmadshin/next-query-glue-starter)
 
 ## That library exports:
-- NextQueryGlueProvider that should wrap your application. It will slightly modify router single tone.
+- NextQueryGlueProvider that should wrap your application. It will slightly modify router singltone.
 - prepareDirectNavigation, function that makes pages router skip next data/middleware call and display page immediately. Should be called before navigation.
 - getQueryKey is a function that returns key for the current page. Basically, it's just an url of the page, but without a hash part.
 - getQueryFn is an async function that calls route data/middleware.
