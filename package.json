@@ -1,7 +1,7 @@
 {
   "name": "next-query-glue",
   "author": "Vadim Akhmadshin",
-  "version": "0.0.2",
+  "version": "0.0.3-rc.1",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -32,6 +32,11 @@ export const getRouteInfoOnly = async ({ singletonRouter, ...props}: GetRouteInf
       res.__N_SSG = false;
       res.__N_SSP = false;
     }
+    setTimeout(() => {
+      if ('route' in res && res.route) {
+        delete pageRouter.components[res.route];
+      }
+    }, 0);
     return res;
   });
 }
