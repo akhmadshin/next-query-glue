@@ -24,6 +24,7 @@ export const getRouteInfoWithOnLoad = async ({ onLoad, singletonRouter, ...props
     }
     return res;
   }).catch((err) => {
+    console.error(err);
     throw new Error(err);
   });
 }

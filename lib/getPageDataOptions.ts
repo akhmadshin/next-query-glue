@@ -47,7 +47,8 @@ export const getQueryFn = async (
   const asPath = pageRouter.asPath;
   const resolvedUrl = getResolvedUrl(router, withTrailingSlash, pathModifier);
 
-  await router.push(resolvedUrl, asPath, { scroll: false }).catch((err) => {
+  await router.replace(resolvedUrl, asPath, { scroll: false }).catch((err) => {
+    console.error(err);
     throw new Error(err);
   });
 

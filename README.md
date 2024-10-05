@@ -1,6 +1,6 @@
 # next-query-glue
 
-> Tiny glue layer between next.js and react-query/rtk-query/swr.
+> Tiny glue layer between next.js and react-query (or any other fetching library).
 
 ## Installation
 
@@ -37,4 +37,4 @@ $ yarn add next-query-glue
 
 ## Drawbacks:
 1) Complicates the code. Now your components needs to handle situation when route data is loading.
-2) Routes that trigger NextResponse.rewrite will act like prepareDirectNavigation     wasn't called. As workaround, you can pass pathModifier function in NextQueryGlueProvider to rewrite paths on the client side. 
+2) Routes that trigger NextResponse.rewrite will act like prepareDirectNavigation     wasn't called. As workaround, you can pass pathModifier function in NextQueryGlueProvider to rewrite paths on the client side.
