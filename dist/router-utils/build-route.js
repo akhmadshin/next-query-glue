@@ -1,7 +1,4 @@
-const o = (n, t, u) => {
-  const e = Object.keys(t).reduce((c, r) => c.replace(`[${r}]`, t[r]), n);
-  return u && !e.endsWith("/") ? `${e}/` : e;
-};
+const u = (n, e) => Object.keys(e).reduce((r, t) => r.replace(`[${t}]`, e[t]), n);
 export {
-  o as buildRoute
+  u as buildRoute
 };

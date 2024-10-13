@@ -11,9 +11,7 @@ import { DehydratedState, HydrationBoundary, QueryClient, QueryClientProvider } 
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { Layout } from '@/components/Layout';
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 import { createRouteLoader } from 'next/dist/client/route-loader';
-import { flushSync } from 'react-dom';
 
 // Optional. Prefetch js chunks of the routes on initial load.
 (() => {
@@ -25,57 +23,6 @@ import { flushSync } from 'react-dom';
   routeLoader.prefetch('/blog/[slug]').catch((e: string) => { throw new Error(e) });
 })()
 
-// Optional. Handle view transitions
-const handleRouteChangeStart = (href: string) => {
-  flushSync(() => {
-    const el = document.querySelector<HTMLImageElement>(`[style*='view-transition-name']`);
-    if (el) {
-      el.style.viewTransitionName = '';
-    }
-    const image = document.querySelector<HTMLImageElement>('.transition-img');
-    if (image && image.src) {
-      image.style.viewTransitionName = 'transition-img';
-      window.transitionImg = image.src.replace(location.origin || '', '');
-      return;
-    }
-
-    const clickedLink = document.querySelector<HTMLImageElement>(`a[href$='${href}']`);
-    const clickedImg = clickedLink?.querySelector<HTMLImageElement>('.transitionable-img');
-    if (clickedImg) {
-      window.transitionImg = clickedImg.src.replace(location.origin || '', '');
-      clickedImg.style.viewTransitionName = 'transition-img';
-    }
-  })
-}
-const handleRouteChangeComplete = () => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  flushSync(() => {
-    if (window.transitionImg) {
-      const transitionImg = document.querySelector<HTMLImageElement>(`img[src$='${window.transitionImg}']`);
-      if (transitionImg) {
-        transitionImg.style.viewTransitionName = 'transition-img';
-      }
-    }
-  })
-
-  // Next tick
-  setTimeout(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-
-    if (window.pageMounted) {
-      window.pageMounted();
-      window.pageMounted = undefined;
-    }
-    window.transitionImg = undefined;
-  }, 0);
-}
-
 export default function App({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedState}>) {
   const router = useRouter();
 
@@ -83,25 +30,17 @@ export default function App({ Component, pageProps }: AppProps<{ dehydratedState
     if (!router) {
       return;
     }
-    router.events.on('routeChangeStart', handleRouteChangeStart);
-    router.events.on('routeChangeComplete', handleRouteChangeComplete);
-
+    // Optional. Disable prefetch
     router.prefetch = async () => Promise.resolve(undefined);
 
     router.beforePopState((state) => {
       prepareDirectNavigation({
         href: state.as,
         singletonRouter,
-        withTrailingSlash: Boolean(process.env.__NEXT_TRAILING_SLASH),
       });
       return true;
     });
 
-    // Optional. Handle view transitions
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-      router.events.off('routeChangeComplete', handleRouteChangeComplete);
-    }
   }, [router]);
 
   const [queryClient] = React.useState(() => new QueryClient({
@@ -147,13 +86,8 @@ function removeTrailingSlash(route: string) {
 
 const normalizeResolvedUrl = (resolvedUrl: string) => {
   const pathnameAndQuery = resolvedUrl.split('?') as [string, string];
-  let pathname = removeTrailingSlash(pathnameAndQuery[0]);
+  const pathname = removeTrailingSlash(pathnameAndQuery[0]);
   let query = pathnameAndQuery[1];
-
-
-  if (process.env.__NEXT_TRAILING_SLASH && pathname !== '/') {
-    pathname = `${pathname}/`
-  }
   if (query) {
     const params = new URLSearchParams(query);
     params.forEach((value, key) => {
@@ -228,11 +162,7 @@ function removeTrailingSlash(route: string) {
 
 const normalizePathname = (resolvedUrl: string) => {
   const normalizedResolvedUrl = removeTrailingSlash(resolvedUrl);
-  let pathname = normalizedResolvedUrl.split('?')[0];
-  if (process.env.__NEXT_TRAILING_SLASH) {
-    pathname = `${pathname}/`
-  }
-  return pathname;
+  return normalizedResolvedUrl.split('?')[0];
 }
 
 export const withSSGTanStackQuery = <T extends object, Q extends ParsedUrlQuery = ParsedUrlQuery>(getPath: (context: Q) => string, getStaticProps: GetStaticProps<T, Q>) => async (
@@ -294,25 +224,23 @@ pages/
 
 ### 3) Create usePageData hook
 ```ts
-import { DehydratedState, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getQueryFn, getQueryKey } from 'next-query-glue';
+import { DehydratedState, useQuery } from '@tanstack/react-query';
+import { getQueryKey, getQueryFn } from 'next-query-glue';
 import { useRouter } from 'next/router';
 import singletonRouter from 'next/dist/client/router';
 
 export const usePageData = <T>() => {
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const queryKey = [getQueryKey(router)]
   const placeholderData = typeof window === 'undefined' ? undefined : window.placeholderData;
-  const queryKey = [getQueryKey(router, Boolean(process.env.__NEXT_TRAILING_SLASH))]
 
   const res =  useQuery<unknown, unknown, T>({
+    staleTime: Infinity,
+    gcTime: Infinity,
+    structuralSharing: false,
     queryKey,
     queryFn: async () => {
-      const serverData = queryClient.getQueryData([...queryKey]);
-      if (serverData && !res.isStale) {
-        return serverData;
-      }
-      return getQueryFn(router, Boolean(process.env.__NEXT_TRAILING_SLASH), singletonRouter).then((props) => {
+      return getQueryFn(router, singletonRouter).then((props) => {
         const res = props as { dehydratedState: DehydratedState};
         return res?.dehydratedState ? res.dehydratedState.queries[0].state.data : props;
       })
@@ -374,7 +302,6 @@ export const Link = React.forwardRef<HTMLAnchorElement, Props>(function LinkComp
     prepareDirectNavigation({
       href,
       singletonRouter,
-      withTrailingSlash: Boolean(process.env.__NEXT_TRAILING_SLASH),
     });
     window.placeholderData = placeholderData;
 

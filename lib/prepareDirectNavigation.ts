@@ -8,15 +8,13 @@ import { buildRoute } from './router-utils/build-route';
 interface Props {
   href: Url,
   singletonRouter: SingletonRouter,
-  withTrailingSlash: boolean,
 }
 export const prepareDirectNavigation = ({
   href,
   singletonRouter,
-  withTrailingSlash,
 }: Props) => {
   const urlAsString = typeof href === 'string' ? href : formatWithValidation(href);
-  const pathname = buildRoute(singletonRouter.route, singletonRouter.query as Record<string, string>, withTrailingSlash);
+  const pathname = buildRoute(singletonRouter.route, singletonRouter.query as Record<string, string>);
 
   const isLocal = isLocalURL(urlAsString);
   if (!isLocal) {

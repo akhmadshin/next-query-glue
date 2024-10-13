@@ -9,7 +9,6 @@ import {
 
 export const getQueryFn = async (
   router: NextRouter,
-  withTrailingSlash: boolean,
   singletonRouter: SingletonRouter,
   pathModifier?: (path: string) => string,
 ): Promise<object> => {
@@ -45,7 +44,7 @@ export const getQueryFn = async (
     });
   }
   const asPath = pageRouter.asPath;
-  const resolvedUrl = getResolvedUrl(router, withTrailingSlash, pathModifier);
+  const resolvedUrl = getResolvedUrl(router, pathModifier);
 
   await router.replace(resolvedUrl, asPath, { scroll: false }).catch((err) => {
     console.error(err);
@@ -67,22 +66,22 @@ export const getQueryFn = async (
 
 export const getQueryKey = (
   router: NextRouter,
-  withTrailingSlash: boolean,
   pathModifier?: (path: string) => string,
 ) => {
-  return getResolvedUrl(router, withTrailingSlash, pathModifier);
+  return getResolvedUrl(router, pathModifier);
 }
 
 const getResolvedUrl = (
   router: NextRouter,
-  withTrailingSlash: boolean,
   pathModifier?: (path: string) => string,
 ) => {
-  const query = router.asPath.split('#')[0].split('?')[1];
+  let query = router.asPath.split('#')[0].split('?')[1];
 
-  let pathname = buildRoute(router.route, router.query as Record<string, string>, withTrailingSlash);
+  let pathname = buildRoute(router.route, router.query as Record<string, string>);
 
   if (query) {
+    const params = new URLSearchParams(query);
+    query = params.toString();
     pathname = `${pathname}?${query}`
   }
 

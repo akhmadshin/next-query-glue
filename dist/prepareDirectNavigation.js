@@ -33,7 +33,7 @@ var U = {}, I = {};
       return v;
     },
     WEB_VITALS: function() {
-      return s;
+      return a;
     },
     execOnce: function() {
       return o;
@@ -42,16 +42,16 @@ var U = {}, I = {};
       return r;
     },
     getLocationOrigin: function() {
-      return i;
+      return s;
     },
     getURL: function() {
-      return l;
+      return f;
     },
     isAbsoluteUrl: function() {
-      return u;
+      return i;
     },
     isResSent: function() {
-      return a;
+      return u;
     },
     loadGetInitialProps: function() {
       return p;
@@ -63,7 +63,7 @@ var U = {}, I = {};
       return A;
     }
   });
-  const s = [
+  const a = [
     "CLS",
     "FCP",
     "FID",
@@ -79,19 +79,19 @@ var U = {}, I = {};
       return c || (c = !0, h = t(..._)), h;
     };
   }
-  const f = /^[a-zA-Z][a-zA-Z\d+\-.]*?:/, u = (t) => f.test(t);
-  function i() {
+  const l = /^[a-zA-Z][a-zA-Z\d+\-.]*?:/, i = (t) => l.test(t);
+  function s() {
     const { protocol: t, hostname: c, port: h } = window.location;
     return t + "//" + c + (h ? ":" + h : "");
   }
-  function l() {
-    const { href: t } = window.location, c = i();
+  function f() {
+    const { href: t } = window.location, c = s();
     return t.substring(c.length);
   }
   function r(t) {
     return typeof t == "string" ? t : t.displayName || t.name || "Unknown";
   }
-  function a(t) {
+  function u(t) {
     return t.finished || t.headersSent;
   }
   function d(t) {
@@ -112,7 +112,7 @@ var U = {}, I = {};
         pageProps: await p(c.Component, c.ctx)
       } : {};
     const _ = await t.getInitialProps(c);
-    if (O && a(O))
+    if (O && u(O))
       return _;
     if (!_) {
       const E = '"' + r(t) + '.getInitialProps()" should resolve to an object. But found "' + _ + '" instead.';
@@ -161,14 +161,14 @@ var b = { exports: {} }, L = {}, q = {};
       return n;
     }
   });
-  function n(s) {
-    const o = s.indexOf("#"), f = s.indexOf("?"), u = f > -1 && (o < 0 || f < o);
-    return u || o > -1 ? {
-      pathname: s.substring(0, u ? f : o),
-      query: u ? s.substring(f, o > -1 ? o : void 0) : "",
-      hash: o > -1 ? s.slice(o) : ""
+  function n(a) {
+    const o = a.indexOf("#"), l = a.indexOf("?"), i = l > -1 && (o < 0 || l < o);
+    return i || o > -1 ? {
+      pathname: a.substring(0, i ? l : o),
+      query: i ? a.substring(l, o > -1 ? o : void 0) : "",
+      hash: o > -1 ? a.slice(o) : ""
     } : {
-      pathname: s,
+      pathname: a,
       query: "",
       hash: ""
     };
@@ -180,15 +180,15 @@ var b = { exports: {} }, L = {}, q = {};
   }), Object.defineProperty(e, "pathHasPrefix", {
     enumerable: !0,
     get: function() {
-      return s;
+      return a;
     }
   });
   const n = q;
-  function s(o, f) {
+  function a(o, l) {
     if (typeof o != "string")
       return !1;
-    const { pathname: u } = (0, n.parsePath)(o);
-    return u === f || u.startsWith(f + "/");
+    const { pathname: i } = (0, n.parsePath)(o);
+    return i === l || i.startsWith(l + "/");
   }
 })(L);
 (function(e, n) {
@@ -197,12 +197,12 @@ var b = { exports: {} }, L = {}, q = {};
   }), Object.defineProperty(n, "hasBasePath", {
     enumerable: !0,
     get: function() {
-      return f;
+      return l;
     }
   });
-  const s = L, o = process.env.__NEXT_ROUTER_BASEPATH || "";
-  function f(u) {
-    return (0, s.pathHasPrefix)(u, o);
+  const a = L, o = process.env.__NEXT_ROUTER_BASEPATH || "";
+  function l(i) {
+    return (0, a.pathHasPrefix)(i, o);
   }
   (typeof n.default == "function" || typeof n.default == "object" && n.default !== null) && typeof n.default.__esModule > "u" && (Object.defineProperty(n.default, "__esModule", { value: !0 }), Object.assign(n.default, n), e.exports = n.default);
 })(b, b.exports);
@@ -216,12 +216,12 @@ var W = b.exports;
       return o;
     }
   });
-  const n = I, s = W;
-  function o(f) {
-    if (!(0, n.isAbsoluteUrl)(f)) return !0;
+  const n = I, a = W;
+  function o(l) {
+    if (!(0, n.isAbsoluteUrl)(l)) return !0;
     try {
-      const u = (0, n.getLocationOrigin)(), i = new URL(f, u);
-      return i.origin === u && (0, s.hasBasePath)(i.pathname);
+      const i = (0, n.getLocationOrigin)(), s = new URL(l, i);
+      return s.origin === i && (0, a.hasBasePath)(s.pathname);
     } catch {
       return !1;
     }
@@ -230,24 +230,24 @@ var W = b.exports;
 var R = {}, N = {};
 function T(e) {
   if (typeof WeakMap != "function") return null;
-  var n = /* @__PURE__ */ new WeakMap(), s = /* @__PURE__ */ new WeakMap();
+  var n = /* @__PURE__ */ new WeakMap(), a = /* @__PURE__ */ new WeakMap();
   return (T = function(o) {
-    return o ? s : n;
+    return o ? a : n;
   })(e);
 }
 N._ = N._interop_require_wildcard = D;
 function D(e, n) {
   if (!n && e && e.__esModule) return e;
   if (e === null || typeof e != "object" && typeof e != "function") return { default: e };
-  var s = T(n);
-  if (s && s.has(e)) return s.get(e);
-  var o = { __proto__: null }, f = Object.defineProperty && Object.getOwnPropertyDescriptor;
-  for (var u in e)
-    if (u !== "default" && Object.prototype.hasOwnProperty.call(e, u)) {
-      var i = f ? Object.getOwnPropertyDescriptor(e, u) : null;
-      i && (i.get || i.set) ? Object.defineProperty(o, u, i) : o[u] = e[u];
+  var a = T(n);
+  if (a && a.has(e)) return a.get(e);
+  var o = { __proto__: null }, l = Object.defineProperty && Object.getOwnPropertyDescriptor;
+  for (var i in e)
+    if (i !== "default" && Object.prototype.hasOwnProperty.call(e, i)) {
+      var s = l ? Object.getOwnPropertyDescriptor(e, i) : null;
+      s && (s.get || s.set) ? Object.defineProperty(o, i, s) : o[i] = e[i];
     }
-  return o.default = e, s && s.set(e, o), o;
+  return o.default = e, a && a.set(e, o), o;
 }
 var w = {}, S;
 function Q() {
@@ -255,48 +255,48 @@ function Q() {
     Object.defineProperty(e, "__esModule", {
       value: !0
     });
-    function n(i, l) {
-      for (var r in l) Object.defineProperty(i, r, {
+    function n(s, f) {
+      for (var r in f) Object.defineProperty(s, r, {
         enumerable: !0,
-        get: l[r]
+        get: f[r]
       });
     }
     n(e, {
       assign: function() {
-        return u;
+        return i;
       },
       searchParamsToUrlQuery: function() {
-        return s;
+        return a;
       },
       urlQueryToSearchParams: function() {
-        return f;
+        return l;
       }
     });
-    function s(i) {
-      const l = {};
-      return i.forEach((r, a) => {
-        typeof l[a] > "u" ? l[a] = r : Array.isArray(l[a]) ? l[a].push(r) : l[a] = [
-          l[a],
+    function a(s) {
+      const f = {};
+      return s.forEach((r, u) => {
+        typeof f[u] > "u" ? f[u] = r : Array.isArray(f[u]) ? f[u].push(r) : f[u] = [
+          f[u],
           r
         ];
-      }), l;
+      }), f;
     }
-    function o(i) {
-      return typeof i == "string" || typeof i == "number" && !isNaN(i) || typeof i == "boolean" ? String(i) : "";
+    function o(s) {
+      return typeof s == "string" || typeof s == "number" && !isNaN(s) || typeof s == "boolean" ? String(s) : "";
     }
-    function f(i) {
-      const l = new URLSearchParams();
-      return Object.entries(i).forEach((r) => {
-        let [a, d] = r;
-        Array.isArray(d) ? d.forEach((p) => l.append(a, o(p))) : l.set(a, o(d));
-      }), l;
+    function l(s) {
+      const f = new URLSearchParams();
+      return Object.entries(s).forEach((r) => {
+        let [u, d] = r;
+        Array.isArray(d) ? d.forEach((p) => f.append(u, o(p))) : f.set(u, o(d));
+      }), f;
     }
-    function u(i) {
-      for (var l = arguments.length, r = new Array(l > 1 ? l - 1 : 0), a = 1; a < l; a++)
-        r[a - 1] = arguments[a];
+    function i(s) {
+      for (var f = arguments.length, r = new Array(f > 1 ? f - 1 : 0), u = 1; u < f; u++)
+        r[u - 1] = arguments[u];
       return r.forEach((d) => {
-        Array.from(d.keys()).forEach((p) => i.delete(p)), d.forEach((p, g) => i.append(g, p));
-      }), i;
+        Array.from(d.keys()).forEach((p) => s.delete(p)), d.forEach((p, g) => s.append(g, p));
+      }), s;
     }
   }(w)), w;
 }
@@ -304,31 +304,31 @@ function Q() {
   Object.defineProperty(e, "__esModule", {
     value: !0
   });
-  function n(r, a) {
-    for (var d in a) Object.defineProperty(r, d, {
+  function n(r, u) {
+    for (var d in u) Object.defineProperty(r, d, {
       enumerable: !0,
-      get: a[d]
+      get: u[d]
     });
   }
   n(e, {
     formatUrl: function() {
-      return u;
+      return i;
     },
     formatWithValidation: function() {
-      return l;
+      return f;
     },
     urlObjectKeys: function() {
-      return i;
+      return s;
     }
   });
-  const o = /* @__PURE__ */ N._(Q()), f = /https?|ftp|gopher|file/;
-  function u(r) {
-    let { auth: a, hostname: d } = r, p = r.protocol || "", g = r.pathname || "", v = r.hash || "", P = r.query || "", y = !1;
-    a = a ? encodeURIComponent(a).replace(/%3A/i, ":") + "@" : "", r.host ? y = a + r.host : d && (y = a + (~d.indexOf(":") ? "[" + d + "]" : d), r.port && (y += ":" + r.port)), P && typeof P == "object" && (P = String(o.urlQueryToSearchParams(P)));
+  const o = /* @__PURE__ */ N._(Q()), l = /https?|ftp|gopher|file/;
+  function i(r) {
+    let { auth: u, hostname: d } = r, p = r.protocol || "", g = r.pathname || "", v = r.hash || "", P = r.query || "", y = !1;
+    u = u ? encodeURIComponent(u).replace(/%3A/i, ":") + "@" : "", r.host ? y = u + r.host : d && (y = u + (~d.indexOf(":") ? "[" + d + "]" : d), r.port && (y += ":" + r.port)), P && typeof P == "object" && (P = String(o.urlQueryToSearchParams(P)));
     let m = r.search || P && "?" + P || "";
-    return p && !p.endsWith(":") && (p += ":"), r.slashes || (!p || f.test(p)) && y !== !1 ? (y = "//" + (y || ""), g && g[0] !== "/" && (g = "/" + g)) : y || (y = ""), v && v[0] !== "#" && (v = "#" + v), m && m[0] !== "?" && (m = "?" + m), g = g.replace(/[?#]/g, encodeURIComponent), m = m.replace("#", "%23"), "" + p + y + g + m + v;
+    return p && !p.endsWith(":") && (p += ":"), r.slashes || (!p || l.test(p)) && y !== !1 ? (y = "//" + (y || ""), g && g[0] !== "/" && (g = "/" + g)) : y || (y = ""), v && v[0] !== "#" && (v = "#" + v), m && m[0] !== "?" && (m = "?" + m), g = g.replace(/[?#]/g, encodeURIComponent), m = m.replace("#", "%23"), "" + p + y + g + m + v;
   }
-  const i = [
+  const s = [
     "auth",
     "hash",
     "host",
@@ -342,19 +342,18 @@ function Q() {
     "search",
     "slashes"
   ];
-  function l(r) {
-    return process.env.NODE_ENV === "development" && r !== null && typeof r == "object" && Object.keys(r).forEach((a) => {
-      i.includes(a) || console.warn("Unknown key passed via urlObject into url.format: " + a);
-    }), u(r);
+  function f(r) {
+    return process.env.NODE_ENV === "development" && r !== null && typeof r == "object" && Object.keys(r).forEach((u) => {
+      s.includes(u) || console.warn("Unknown key passed via urlObject into url.format: " + u);
+    }), i(r);
   }
 })(R);
 const F = ({
   href: e,
-  singletonRouter: n,
-  withTrailingSlash: s
+  singletonRouter: n
 }) => {
-  const o = typeof e == "string" ? e : R.formatWithValidation(e), f = B(n.route, n.query, s);
-  if (!U.isLocalURL(o) || o.startsWith("#") || o.startsWith(`${f}#`))
+  const a = typeof e == "string" ? e : R.formatWithValidation(e), o = B(n.route, n.query);
+  if (!U.isLocalURL(a) || a.startsWith("#") || a.startsWith(`${o}#`))
     return;
   const i = n == null ? void 0 : n.router;
   !i || !i.getRouteInfoOnly || (i.getRouteInfo = i.getRouteInfoOnly);
