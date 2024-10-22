@@ -65,4 +65,3 @@ export const NextQueryGlueProvider: FC<PropsWithChildren<Props>> = ({ pathModifi
     </NextQueryGlueContext.Provider>
   )
 }
-
