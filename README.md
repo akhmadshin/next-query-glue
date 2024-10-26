@@ -1,6 +1,6 @@
 # next-query-glue
 
-> Tiny (1.4kb) library that allows you to patently execute route-data requests within next.js pages router.
+> Tiny (1.4kb) library that allows you to patently execute getServerSideProps requests on soft navigation.
 
 ## Installation
 
