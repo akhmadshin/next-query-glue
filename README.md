@@ -1,6 +1,6 @@
 # next-query-glue
 
-> Tiny glue layer between next.js and react-query (or any other fetching library).
+> Tiny (1.4kb) library that allows you to patently execute route-data requests within next.js pages router.
 
 ## Installation
 
