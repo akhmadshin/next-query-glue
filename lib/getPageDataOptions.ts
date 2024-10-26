@@ -6,7 +6,6 @@ import {
   ModifiedRouter
 } from './router-extensions/types';
 
-
 export const getQueryFn = async (
   router: NextRouter,
   singletonRouter: SingletonRouter,

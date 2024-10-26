@@ -1,7 +1,7 @@
-import { createContext, FC, PropsWithChildren } from 'react';
+import { createContext, FC, PropsWithChildren, useLayoutEffect } from 'react';
 import { getRouteInfoOnly } from './router-extensions/getRouteInfoOnly';
 import { getRouteInfoWithOnLoad } from './router-extensions/getRouteInfoWithOnLoad';
-import {
+import type {
   GetRouteInfo,
   GetRouteInfoProps, GetRouteInfoWithOnLoadProps, GetRouteInfoWithPathnameModifierProps,
   ModifiedRouter, OnlyHashChange, Subscription
@@ -58,6 +58,25 @@ export const patchRouter = (pathnameModifier: (pathname: string) => string = (ro
 
 export const NextQueryGlueProvider: FC<PropsWithChildren<Props>> = ({ pathModifier, singletonRouter, children }) => {
   patchRouter(pathModifier, singletonRouter);
+
+  const handleHashChangeStart = () => {
+    const pageRouter = singletonRouter?.router as ModifiedRouter | null;
+    if (!pageRouter || !pageRouter.getRouteInfoOrig) {
+      return;
+    }
+
+    pageRouter.getRouteInfo = pageRouter.getRouteInfoOrig;
+  }
+
+  useLayoutEffect(() => {
+    if (!singletonRouter || !singletonRouter.router) {
+      return;
+    }
+    singletonRouter.router.events.on('hashChangeStart', handleHashChangeStart);
+    return () => {
+      singletonRouter.router?.events.off('hashChangeStart', handleHashChangeStart)
+    }
+  }, []);
 
   return (
     <NextQueryGlueContext.Provider value={{ pathModifier, singletonRouter }}>

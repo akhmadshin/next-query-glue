@@ -10,11 +10,7 @@ export const subModified = (info: PrivateRouteInfo, App: AppComponent, scroll: {
   }
 
   const infoRoute = info.route;
-  if (!infoRoute) {
-    return pageRouter.subOrig(info, App, scroll);
-  }
-
-  if (infoRoute === '/_error') {
+  if (!infoRoute || infoRoute === '/_error') {
     return pageRouter.subOrig(info, App, scroll);
   }
 
