@@ -1,6 +1,6 @@
 # next-query-glue
 
-> Use that compact 1.4 KB library to manually run route data requests (getServerSideProps and getStaticProps) during soft navigation. By using this library with Tanstack Query, you can unlock extensive client-side optimizations provided by react-query.
+> Use that compact 1.4 KB library to manually run route data requests (getServerSideProps and getStaticProps) during soft navigation. By using this library with Tanstack Query (aka react-query), you can unlock extensive client-side optimizations.
 
 ## Installation
 
